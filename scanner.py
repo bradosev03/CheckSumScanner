@@ -1,6 +1,23 @@
+#!/bin/python
 from bs4 import BeautifulSoup
 import urllib.request
 import urllib.error
+import argparse
+import sys
+
+hardware=["amd64","armhf","i386"]
+distros=["ubuntu-trusty","ubuntu-xenial","ubuntu-bionic","ubuntu-cosmic","debian-stable","debian-jessie","debian-stretch","debian-buster","debian-experimental"]
+ubuntu="https://packages.ubuntu.com/xenial/allpackages"
+
+def __main__(parser, args):
+    if args.distro not in distros:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    if args.type not in hardware:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    else:
+        print("continue")
 
 
 def parseUrl(resp):
@@ -48,9 +65,13 @@ def getCheckSum(url):
    except:
         print("Error")
 
-url ="https://packages.ubuntu.com/xenial/allpackages"
-crawlSite(url)
-#getCheckSum(url)
 
 
-
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Pull Latest Hash for All Packages in Linux Distribution")
+    parser.add_argument('-d','--distro', help=print("Distrbution: ", ', '.join(map(str,distros))),required=True)
+    parser.add_argument('-t','--type', help="Hardware Type: amd64, armhf, i386",required=True)
+    parser.add_argument('-o','--output', help="Filename of output file",required=True)
+    parser.add_argument('-v','--verbose', help="Toggle Verbose on or off")
+    args = parser.parse_args()
+    __main__(parser,args)
